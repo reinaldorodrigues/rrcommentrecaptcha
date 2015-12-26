@@ -1,2 +1,2 @@
 # rrcommentrecaptcha
-Plugin do Wordpress para inserir recaptcha no formulario 
+Plugin do Wordpress para inserir recaptcha no formulario do comentário.
