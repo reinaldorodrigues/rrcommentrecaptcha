@@ -110,6 +110,12 @@ function action_rrcrecaptcha(){
     include_once RR_PATH.DS.'rrcrecaptcha_form.php';
 }
 
+if(!is_admin()){
+    wp_enqueue_style('rrcrecaptcha-css',plugins_url( '/rrcommentrecaptcha/assets/js/rrcrecaptcha.css' )  );
+    wp_enqueue_script('rrcrecaptcha-js', plugins_url( '/rrcommentrecaptcha/assets/js/rrcrecaptcha.js' ), array('jquery'));
+}
+
+
 // altera os campos 
 add_filter('comment_form_default_fields', 'alterar_campos');
 
@@ -148,16 +154,20 @@ function ajuste_campos($campos) {
     $msg = get_option('rrcrecaptcha_return_form'); 
        
     // classe css error
-    $class = $msg['type'] == "eror" ? ' error' : '';
+    $class = $msg['type'] == "error" ? ' error' : 'sucess';
     
     // corpo da mensagem
-    $body_msg = '<div class="msgbody '.$class.'">'
+    $body = '<div id="msg-grl">'
+            . '</div>'
+            . '<div class="msgbody '.$class.'">'
             . '<div id="close">X</div>'
             . '<div class="msg">'.$msg['message'].'</div>'
             . '</div>';
     
+    $body_msg = !empty($msg['message']) ? $body : '';
+    
     // inseri o botão e a div que conterá a mensagem
-    $campos['submit_field']             = '<div class="form-submit">%1$s %2$s</div><div id="msg-grl">'.$body_msg.'</div>';
+    $campos['submit_field']             = '<div class="form-submit">%1$s %2$s</div>'.$body_msg;
     
     // apos a apresentação da mensagem limpa o conteudo
     update_option('rrcrecaptcha_return_form', array());
