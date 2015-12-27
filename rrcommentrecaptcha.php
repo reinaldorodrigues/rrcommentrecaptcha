@@ -115,8 +115,8 @@ add_filter('comment_form_default_fields', 'alterar_campos');
 
 function alterar_campos($campos) {
 
-    $campos['author']   = '<label>Nome:</label><input id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) . '" ' . $aria_req . $html_req . ' />';
-    $campos['email']    = '<label>E-mail:</label><input id="email" name="email" ' . ( $html5 ? 'type="email"' : 'type="text"' ) . ' value="' . esc_attr(  $commenter['comment_author_email'] ) . '" size="30" aria-describedby="email-notes" ' . $aria_req . $html_req . ' /> ';
+    $campos['author']   = '<label>Nome:</label><input id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) . '"  aria-required="true" required="required" />';
+    $campos['email']    = '<label>E-mail:</label><input id="email" name="email" ' . ( $html5 ? 'type="email"' : 'type="text"' ) . ' value="' . esc_attr(  $commenter['comment_author_email'] ) . '" size="30" aria-describedby="email-notes"  aria-required="true" required="required" /> ';
     $campos['url']      = ''; // remove o campo site 
     
     return $campos;
@@ -187,47 +187,59 @@ function pre_comment_check() {
        return;
    }
    
-   // se o campo não estiver preenchido retorna mensagem de erro    
    if ($_POST['email'] == "" || $_POST['email'] == NULL  ) {
        
-       // verifaca se o e-mail esta com padrão de digitação 
-       if(!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i",  $_POST['email'])){
-           
-           // gera a mensagem e salva 
-           update_option('rrcrecaptcha_return_form', 
-                   array(
-                       'type'   => 'error',
-                       'message' => 'O E-mail informação não está correto!'
-                    )
-           );
-           
-           // redireciona para o post atual
-           wp_redirect( get_permalink( (int)$_POST['comment_post_ID'] ) ); exit;
-            
-           return;
-        }
+       // gera a mensagem e salva 
+       update_option('rrcrecaptcha_return_form', 
+               array(
+                   'type'   => 'error',
+                   'message' => 'Campo E-mail é de preenchimento obrigatório!'
+                )
+        );       
         
-        if(function_exists('checkdnsrr')){
-            list (, $dominio)  = explode('@', $_POST['email'] );
-            if ( !( checkdnsrr($dominio, 'MX') || checkdnsrr($dominio, 'A'))){
-                
-                // gera a mensagem e salva 
-                update_option('rrcrecaptcha_return_form', 
-                        array(
-                            'type'   => 'error',
-                            'message' => 'O E-mail informação não é válido!'
-                        )
-                );
-                
-                // redireciona para o post atual
-                wp_redirect( get_permalink( (int)$_POST['comment_post_ID'] ) ); exit;
-                
-                return;
-                
-            }                        
-        }      
-        
+        // redireciona para o post atual
+        wp_redirect( get_permalink( (int)$_POST['comment_post_ID'] ) ); exit;
+       
+       return;
+       
    }
+   
+   // verifaca se o e-mail esta com padrão de digitação 
+   if(!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i",  $_POST['email'])){
+       
+       // gera a mensagem e salva 
+       update_option('rrcrecaptcha_return_form', 
+               array(
+                   'type'   => 'error',
+                   'message' => 'O E-mail informação não está correto!'
+                )
+        );
+       
+       // redireciona para o post atual
+       wp_redirect( get_permalink( (int)$_POST['comment_post_ID'] ) ); exit;
+       
+       return;
+    }
+    
+    if(function_exists('checkdnsrr')){
+        list (, $dominio)  = explode('@', $_POST['email'] );
+        if ( !( checkdnsrr($dominio, 'MX') || checkdnsrr($dominio, 'A'))){
+            
+            // gera a mensagem e salva 
+            update_option('rrcrecaptcha_return_form', 
+                    array(
+                        'type'   => 'error',
+                        'message' => 'O E-mail informação não é válido!'
+                        )
+            );
+            
+            // redireciona para o post atual
+            wp_redirect( get_permalink( (int)$_POST['comment_post_ID'] ) ); exit;
+            
+            return;
+            
+        }                        
+    }      
    
    // se o campo não estiver preenchido retorna mensagem de erro    
    if ($_POST['comment'] == "" || $_POST['comment'] == NULL  ) {
