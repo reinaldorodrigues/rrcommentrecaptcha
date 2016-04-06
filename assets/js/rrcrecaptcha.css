@@ -7,7 +7,7 @@
     height: 100%;
     left: 0px;
     top: 0px;
-    z-index: 99998;
+    z-index: 9998;
     background-color: #ffffff;
     filter:alpha(opacity=80);
     -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
@@ -23,7 +23,7 @@
     margin-top: -75px;
     position: absolute;
     left: 50%;
-    top: 50%;
+    bottom: 50%;
     z-index: 99999;
     -moz-box-shadow:3px 3px 5px 6px  #ccc;
     -webkit-box-shadow:3px 3px 5px 6px #ccc;
